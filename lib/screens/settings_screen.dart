@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_preferencias_usuario/providers/theme_provider.dart';
+import 'package:flutter_preferencias_usuario/share_preferences/preferences.dart';
 import 'package:flutter_preferencias_usuario/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const String routerName = 'Settings';
@@ -11,58 +14,63 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool isDarkmode = false;
+  /* bool isDarkmode = false;
   int gender = 1;
-  String name = 'Pedro';
+  String name = 'Pedro'; */
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Settings')),
-        drawer: SideMenu(),
+        appBar: AppBar(title: const Text('Settings')),
+        drawer: const SideMenu(),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Settings',
                 style: TextStyle(fontSize: 45, fontWeight: FontWeight.w300),
               ),
-              Divider(),
+              const Divider(),
               SwitchListTile.adaptive(
-                  value: isDarkmode,
-                  title: Text('Darkmode'),
+                  value: Preferences.isDarkmode,
+                  title: const Text('Darkmode'),
                   onChanged: (value) {
-                    isDarkmode = value;
+                    Preferences.isDarkmode = value;
+                    final themeProvider =
+                        Provider.of<ThemeProvider>(context, listen: false);
+                    value
+                        ? themeProvider.setDarkMode()
+                        : themeProvider.setLightMode();
                     setState(() {});
                   }),
-              Divider(),
+              const Divider(),
               RadioListTile(
                   value: 1,
-                  groupValue: gender,
-                  title: Text('Masculino'),
+                  groupValue: Preferences.gender,
+                  title: const Text('Masculino'),
                   onChanged: (value) {
-                    gender = value ?? 1;
+                    Preferences.gender = value ?? 1;
                     setState(() {});
                   }),
               RadioListTile(
                   value: 2,
-                  groupValue: gender,
-                  title: Text('Femenino'),
+                  groupValue: Preferences.gender,
+                  title: const Text('Femenino'),
                   onChanged: (value) {
-                    gender = value ?? 2;
+                    Preferences.gender = value ?? 2;
                     setState(() {});
                   }),
-              Divider(),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextFormField(
-                  initialValue: 'Xurxo',
+                  initialValue: Preferences.name,
                   onChanged: (value) {
-                    name = value;
+                    Preferences.name = value;
                     setState(() {});
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Nombre', helperText: 'Nombre del usuario'),
                 ),
               )
